@@ -5,7 +5,7 @@
       <p class="mr-2">Season :</p>
     </div>
     <MeetingsCard :year="selectedSeason" @changeMeeting="SwitchMeeting" />
-    <SessionsTable :meetingKey="meetingKey ?? null" />
+    <SessionsTable :meetingKey="meetingKey ?? null" :meetingName="meetingName" />
   </div>
 </template>
 
@@ -24,6 +24,7 @@ export default {
     return {
       selectedSeason: "",
       meetingKey: null,
+      meetingName: "",
     };
   },
   methods: {
@@ -31,8 +32,9 @@ export default {
       this.selectedSeason = season;
     },
 
-    SwitchMeeting(meeting) {
-      this.meetingKey = meeting;
+    SwitchMeeting(meeting_key, meeting_name) {
+      this.meetingKey = meeting_key;
+      this.meetingName = meeting_name;
     },
   },
 };
