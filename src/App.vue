@@ -1,20 +1,21 @@
-<template></template>
+<template>
+  <header-app />
+
+  <router-view class="mt-6" />
+</template>
 
 <script>
 import { RouterLink, RouterView } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
-import ApiService from "./services/api.service";
+import HeaderApp from "./components/layouts/Header.vue";
 
-const apiService = new ApiService();
 
 export default {
   components: {
-    HelloWorld,
     RouterLink,
     RouterView,
+    HeaderApp,
   },
   mounted() {
-    apiService.getDriverPage(9158, 16).then((res) => console.log(res));
   },
 };
 </script>
