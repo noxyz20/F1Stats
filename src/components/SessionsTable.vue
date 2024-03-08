@@ -9,7 +9,7 @@
       </h2>
     </div>
     <div v-else-if="sessions.length != 0">
-      <h3 class="text-2xl font-bold mb-2">{{ meetingName }}</h3>
+      <h3 id="meeting_title" class="text-2xl font-bold mb-2">{{ meetingName }}</h3>
       <table
         class="w-full text-sm text-left rtl:text-right border-2 border-slate-700"
       >

@@ -12,11 +12,12 @@
         <small>{{ meeting.country_name }}</small>
         <p class="font-bold">{{ meeting.meeting_name }}</p>
         <p class="italic">{{ meeting.circuit_short_name }}</p>
-        <small class="font-semibold">{{
+        <small :id="'meeting_date-'+ index" class="font-semibold">{{
           parseDateGMT(meeting.date_start, meeting.gmt_offset)
         }}</small>
         <button
           v-if="meeting.meeting_key === selectedMeeting"
+          :id="'button_meeting-'+ index"
           @click="closeMeeting()"
           class="bg-blue-700 hover:bg-blue-800 p-1 mt-1 rounded-md font-bold"
         >
@@ -24,6 +25,7 @@
         </button>
         <button
           v-else
+          :id="'button_meeting-'+ index"
           @click="openMeeting(meeting.meeting_key, meeting.meeting_name)"
           class="bg-primary-700 hover:bg-primary-800 p-1 mt-1 rounded-md font-bold"
         >
@@ -73,23 +75,12 @@ export default {
       selectedMeeting: null,
     };
   },
-  mounted() {
-    apiService.getMeetingsByYear(this.year).then((res) => {
-      this.meetings = res.data;
-      this.$nextTick(() => {
-        this.$refs.scrollContainer.scrollLeft =
-          this.$refs.scrollContainer.scrollWidth;
-      });
-    });
-  },
   watch: {
     year() {
-      apiService.getMeetingsByYear(this.year).then((res) => {
-        this.meetings = res.data;
-        this.$nextTick(() => {
+      this.getMeetings()
+      this.$nextTick(() => {
           this.$refs.scrollContainer.scrollLeft =
-            this.$refs.scrollContainer.scrollWidth;
-        });
+          this.$refs.scrollContainer.scrollWidth;
       });
     },
   },
@@ -104,6 +95,11 @@ export default {
       this.selectedMeeting = null;
       this.$emit("changeMeeting", null);
     },
+    getMeetings() {
+      apiService.getMeetingsByYear(this.year).then((res) => {
+        this.meetings = res.data;
+      });
+    }
   },
 };
 </script>
