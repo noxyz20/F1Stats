@@ -3,7 +3,7 @@ on: [pull_request, push]
 jobs:
   end-to-end:
     runs-on: ubuntu-22.04
-    name: Artifacts
+    name: Cypress
     steps:
       - name: Checkout
         uses: actions/checkout@v4
