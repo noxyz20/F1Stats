@@ -24,9 +24,9 @@ describe("Switch season", () => {
     cy.get("select").select("2024");
 
     cy.get("select").should("have.value", "2024");
-    cy.get("#meeting_date-0").should(
+    cy.get("#meeting_name-0").should(
       "have.text",
-      "Thu, 29 Feb 2024 13:30:00 GMT"
+      "Pre-Season Testing"
     );
   });
 });

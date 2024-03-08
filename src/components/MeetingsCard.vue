@@ -10,9 +10,9 @@
         :key="index"
       >
         <small>{{ meeting.country_name }}</small>
-        <p class="font-bold">{{ meeting.meeting_name }}</p>
+        <p :id="'meeting_name-'+ index" class="font-bold">{{ meeting.meeting_name }}</p>
         <p class="italic">{{ meeting.circuit_short_name }}</p>
-        <small :id="'meeting_date-'+ index" class="font-semibold">{{
+        <small class="font-semibold">{{
           parseDateGMT(meeting.date_start, meeting.gmt_offset)
         }}</small>
         <button
