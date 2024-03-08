@@ -16,9 +16,9 @@ describe("Switch season", () => {
     cy.get("select").select("2023");
 
     cy.get("select").should("have.value", "2023");
-    cy.get("#meeting_date-0").should(
+    cy.get("#meeting_name-0").should(
       "have.text",
-      "Thu, 23 Feb 2023 09:00:00 GMT"
+      "Bahrain Grand Prix"
     );
 
     cy.get("select").select("2024");
