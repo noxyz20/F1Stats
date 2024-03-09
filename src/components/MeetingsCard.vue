@@ -95,10 +95,9 @@ export default {
       this.selectedMeeting = null;
       this.$emit("changeMeeting", null);
     },
-    getMeetings() {
-      apiService.getMeetingsByYear(this.year).then((res) => {
-        this.meetings = res.data;
-      });
+    async getMeetings() {
+      let res = await apiService.getMeetingsByYear(this.year)
+      this.meetings = res.data;
     }
   },
 };

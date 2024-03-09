@@ -22,12 +22,11 @@ export default {
       seasons: [],
     };
   },
-  mounted() {
-    apiService.getSeasons().then((res) => {
-      this.seasons = res;
-      this.selectedSeason = res[res.length - 1];
-      this.getMeetings();
-    });
+  async mounted() {
+    let res = await apiService.getSeasons()
+    this.seasons = res;
+    this.selectedSeason = res[res.length - 1];
+    this.getMeetings();
   },
   methods: {
     getMeetings() {
@@ -36,5 +35,3 @@ export default {
   },
 };
 </script>
-
-<style></style>

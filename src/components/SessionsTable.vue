@@ -9,7 +9,9 @@
       </h2>
     </div>
     <div v-else-if="sessions.length != 0">
-      <h3 id="meeting_title" class="text-2xl font-bold mb-2">{{ meetingName }}</h3>
+      <h3 id="meeting_title" class="text-2xl font-bold mb-2">
+        {{ meetingName }}
+      </h3>
       <table
         class="w-full text-sm text-left rtl:text-right border-2 border-slate-700"
       >
@@ -145,67 +147,67 @@ export default {
   components: {
     SessionsTableSkeleton,
   },
-  mounted() {
-    apiService.getSessionByMeetingKey(this.meetingKey).then((res) => {
-      this.sessions = res.data;
-      this.sessions.forEach((session) => {
-        this.getFasterLap(session.session_key);
-        this.getPodium(session.session_key);
-        this.podiums[session.session_key] = this.getPodium(session.session_key);
-      });
+  async mounted() {
+    let meetings = await apiService.getSessionByMeetingKey(this.meetingKey);
+    this.sessions = meetings.data;
+    this.sessions.forEach((session) => {
+      this.getFasterLap(session.session_key);
+      this.getPodium(session.session_key);
+      this.podiums[session.session_key] = this.getPodium(session.session_key);
     });
   },
   watch: {
-    meetingKey() {
-      apiService.getSessionByMeetingKey(this.meetingKey).then((res) => {
-        this.sessions = res.data;
-        this.sessions.forEach((session) => {
-          this.getFasterLap(session.session_key);
-          this.getPodium(session.session_key);
-          this.podiums[session.session_key] = this.getPodium(
+    async meetingKey() {
+      let meetings = await apiService.getSessionByMeetingKey(this.meetingKey);
+      this.sessions = meetings.data;
+      await Promise.all(
+        this.sessions.map(async (session) => {
+          await this.getFasterLap(session.session_key);
+          this.podiums[session.session_key] = await this.getPodium(
             session.session_key
           );
-        });
-      });
+        })
+      );
     },
   },
   methods: {
     parseDateGMT: parseDateGMT,
     parseSecondeToLapTime: parseSecondeToLapTime,
 
-    getPodium(sessionKey) {
+    async getPodium(sessionKey) {
       let podium = {};
-      apiService.getLatestDriverPosition(sessionKey, 3).then((drivers) => {
-        drivers.forEach((res) => {
+      let finalClassification = await apiService.getLatestDriverPosition(
+        sessionKey,
+        3
+      );
+      await Promise.all(
+        finalClassification.map(async (res) => {
           let driverPosition = {};
-          apiService
-            .getDriverPage(sessionKey, res.driver_number)
-            .then((driver) => {
-              driverPosition.name = driver.full_name;
-              driverPosition.image = driver.driver_number;
-            });
+          let driver = await apiService.getDriverPage(
+            sessionKey,
+            res.driver_number
+          );
+          driverPosition.name = driver.full_name;
+          driverPosition.image = driver.driver_number;
           podium[res.position] = driverPosition;
-        });
-      });
+        })
+      );
+
       return podium;
     },
-    getFasterLap(sessionKey) {
-      apiService.getFastestLap(sessionKey).then((res) => {
-        let fasterLap = {};
-        fasterLap.lap_duration = this.parseSecondeToLapTime(res.lap_duration);
-        apiService
-          .getDriverPage(sessionKey, res.driver_number)
-          .then((driver) => {
-            fasterLap.driver = {
-              name: driver.full_name,
-              image: driver.driver_number,
-            };
-            this.fasterLaps = {
-              ...this.fasterLaps,
-              [sessionKey]: fasterLap,
-            };
-          });
-      });
+    async getFasterLap(sessionKey) {
+      let fasterLap = {};
+      let res = await apiService.getFastestLap(sessionKey)
+      fasterLap.lap_duration = this.parseSecondeToLapTime(res.lap_duration);
+      let driver = await apiService.getDriverPage(sessionKey, res.driver_number)
+      fasterLap.driver = {
+        name: driver.full_name,
+        image: driver.driver_number,
+      };
+      this.fasterLaps = {
+        ...this.fasterLaps,
+        [sessionKey]: fasterLap,
+      };
     },
     handlePodiumLoad(index) {
       this.podiumLoaded[index]++;
@@ -216,5 +218,3 @@ export default {
   },
 };
 </script>
-
-<style></style>
